@@ -9,22 +9,27 @@ class Pipedrive extends Http {
         parent::set_token( "api_token=$token" );      
     }
 
+    public function find_user_by_email ( $email ) {
+        return $this->find_by_email("users/find" , $email);   
+    }
+
     public function find_person_by_email( $email ) {
-        $person = null;
+        return $this->find_by_email("persons/find" , $email);
+    }
 
-        $email_pattern = "/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/";
-        $email_is_valid = preg_match( $email_pattern, $email );
+    private function find_by_email ( $resource, $email ) {
+        $obj = null;
 
-        if( $email_is_valid ) {
-            $result = parent::get("persons/find", [ "term" => $email, "search_by_email" => 1] );
+        if( $this->email_is_valid( $email ) ) {
+            $result = parent::get( $resource, [ "term" => $email, "search_by_email" => 1] );
             if($result->success && count($result->data) > 0) {
-                $person = array_shift($result->data);
+                $obj = array_shift($result->data);
             }
         }
 
-        return $person;
+        return $obj;
     }
-
+    
     public function create_person( $data ) {
         $person = null;
         
