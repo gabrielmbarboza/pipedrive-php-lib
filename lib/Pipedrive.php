@@ -20,7 +20,7 @@ class Pipedrive extends Http {
     private function find_by_email ( $resource, $email ) {
         $obj = null;
 
-        if( $this->email_is_valid( $email ) ) {
+        if( Utils::email_is_valid( $email ) ) {
             $result = parent::get( $resource, [ "term" => $email, "search_by_email" => 1] );
             if($result->success && count($result->data) > 0) {
                 $obj = array_shift($result->data);
